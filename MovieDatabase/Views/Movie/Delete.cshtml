@@ -1,24 +1,24 @@
 ﻿@model MovieDatabase.Models.Movie 
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Delete";
 }
 
 
-<form method="post" asp-action="Edit" enctype="multipart/form-data">
+<form method="post" asp-action="Delete" enctype="multipart/form-data">
     <input asp-for="Id" hidden />
     <div class="border p-2 mt-4 mb-4">
         <div asp-validation-summary="All" class="text-danger"> </div>
         <div class="form-group row">
-            <h2 class="text-info p-lg-3">Edit Movie</h2>
+            <h2 class="text-info p-lg-3">Delete Movie</h2>
         </div>
 
         <div class="row">
             <div class="col-8">
                 <div class="form-group row p-3">
                     <label for="image">Upload a cover image</label>
-                    <input type="file" asp-for="Image" class="form-control-file" id="exampleFormControlFile1">
-                    <span asp-validation-for="Image" class="text-danger"></span>
+                    <input type="file" asp-for="Image" disabled class="form-control-file" id="exampleFormControlFile1">
+                    
                 </div>
 
                 <div class="form-group row p-3">
@@ -26,8 +26,8 @@
                         <label asp-for="Title"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Title" class="form-control" />
-                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <input asp-for="Title" disabled class="form-control" />
+                        
                     </div>
                 </div>
 
@@ -36,8 +36,8 @@
                         <label asp-for="Description"></label>
                     </div>
                     <div class="col-8">
-                        <input type="text" style="" asp-for="Description" class="form-control" />
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <input type="text" style="" disabled asp-for="Description" class="form-control" />
+                        
                     </div>
                 </div>
 
@@ -46,8 +46,8 @@
                         <label asp-for="Year"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Year" class="form-control" />
-                        <span asp-validation-for="Year" class="text-danger"></span>
+                        <input asp-for="Year" disabled class="form-control" />
+                        
                     </div>
                 </div>
 
@@ -56,8 +56,8 @@
                         <label asp-for="Gender"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Gender" class="form-control" />
-                        <span asp-validation-for="Gender" class="text-danger"></span>
+                        <input asp-for="Gender" disabled class="form-control" />
+                        
                     </div>
                 </div>
 
@@ -66,8 +66,8 @@
                         <label asp-for="Rating"></label>
                     </div>
                     <div class="col-8">
-                        <input asp-for="Rating" class="form-control" />
-                        <span asp-validation-for="Rating" class="text-danger"></span>
+                        <input asp-for="Rating" disabled class="form-control" />
+                        
                     </div>
 
                 </div>
@@ -76,7 +76,7 @@
                     <div class="col-8 offset-4 row">
 
                         <div class="col">
-                            <input type="submit" class="btn btn-info w-100" value="Update" />
+                            <input type="submit" class="btn btn-danger w-100" value="Delete" />
                         </div>
                         <div class="col">
                             <a asp-action="Index" class="btn btn-success w-100">

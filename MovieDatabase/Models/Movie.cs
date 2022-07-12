@@ -39,7 +39,7 @@ namespace MovieDatabase.Models
         {
 
         }
-        /*
+
         public Movie(string title, string description, int year, string gender, decimal rating, string imgName, string imgPath)
         {
             Title = title;
@@ -52,6 +52,6 @@ namespace MovieDatabase.Models
             ImgPath = imgPath;
 
         }
-        */
+        
     }
 }
