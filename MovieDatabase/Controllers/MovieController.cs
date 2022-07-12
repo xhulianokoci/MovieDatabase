@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieDatabase.Data;
 using MovieDatabase.Models;
+using MovieDatabase.Repository.IRepository;
 using System.IO;
 
 
@@ -8,17 +9,17 @@ namespace MovieDatabase.Controllers
 {
     public class MovieController : Controller
     {
-        private readonly RepositoryDbContext _db;
+        private readonly IMovieRepository _db;
         private readonly IWebHostEnvironment _iwebhost;
 
-        public MovieController(RepositoryDbContext db, IWebHostEnvironment iwebhost)
+        public MovieController(IMovieRepository db, IWebHostEnvironment iwebhost)
         {
             _db = db;
             _iwebhost = iwebhost;
         }
         public IActionResult Index()
         {
-            IEnumerable<Movie> movies = _db.Movies;
+            IEnumerable<Movie> movies = _db.GetAll();
             return View(movies);
         }
 
@@ -47,8 +48,8 @@ namespace MovieDatabase.Controllers
 
 
                 }
-                await _db.Movies.AddAsync(movie);
-                await _db.SaveChangesAsync();
+                 _db.AddAsync(movie);
+                 _db.Save();
                 TempData["success"] = "Movie created sucefully";
             }
             else
@@ -69,7 +70,7 @@ namespace MovieDatabase.Controllers
                 TempData["error"] = "Movie not found!";
                 return NotFound();
             }
-            var movieFromDb = _db.Movies.Find(id);
+            var movieFromDb = _db.Find(id);
             if(movieFromDb == null)
             {
                 TempData["error"] = "Movie not found!";
@@ -90,7 +91,7 @@ namespace MovieDatabase.Controllers
             //}
             //if (ModelState.IsValid)
             //{
-            var obj = _db.Movies.Find(id);
+            var obj = _db.Find(id);
             if (id == null || id == 0)
             {
                 TempData["error"] = "Movie not found!";
@@ -104,9 +105,9 @@ namespace MovieDatabase.Controllers
             {
                 movie.ImgName = obj.ImgName;
                 movie.ImgPath = obj.ImgPath;
-                _db.ChangeTracker.Clear();
-                _db.Movies.Update(movie);
-                _db.SaveChanges();
+                _db.Clear();
+                _db.Update(movie);
+                _db.Save();
                 TempData["success"] = "Movie updated sucefully";
             }
             else
@@ -128,9 +129,9 @@ namespace MovieDatabase.Controllers
                     movie.ImgName = movie.Image.FileName;
                     movie.ImgPath = saveImg;
                 }
-                _db.ChangeTracker.Clear();
-                _db.Movies.Update(movie);
-                _db.SaveChanges();
+                _db.Clear();
+                _db.Update(movie);
+                _db.Save();
                 TempData["success"] = "Movie updated sucefully";
             }          
             return RedirectToAction("Index");
@@ -144,7 +145,7 @@ namespace MovieDatabase.Controllers
                 TempData["error"] = "Movie not found!";
                 return NotFound();
             }
-            var movieFromDb = _db.Movies.Find(id);
+            var movieFromDb = _db.Find(id);
             if (movieFromDb == null)
             {
                 TempData["error"] = "Movie not found!";
@@ -159,15 +160,15 @@ namespace MovieDatabase.Controllers
         public IActionResult DeletePOST(int? id)
         {
 
-            var movieFromDb = _db.Movies.Find(id);
+            var movieFromDb = _db.Find(id);
             if (movieFromDb == null)
             {
                 TempData["error"] = "Movie not found!";
                 return NotFound();
             }
-            
-            _db.Movies.Remove(movieFromDb);
-            _db.SaveChanges();
+
+            _db.Remove(movieFromDb);
+            _db.Save();
             TempData["success"] = "Movie deleted sucefully";
             return RedirectToAction("Index");
         }
