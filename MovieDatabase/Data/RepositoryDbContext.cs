@@ -14,5 +14,7 @@ namespace MovieDatabase.Data
        
 
         public DbSet<Movie> Movies { get; set; }
+
+        public DbSet<Series> Series { get; set; }
     }
 }
