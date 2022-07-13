@@ -6,8 +6,5 @@ namespace MovieDatabase.Repository.IRepository
     {
         void Update(Movie obj);
 
-        void Save();
-
-        
     }
 }

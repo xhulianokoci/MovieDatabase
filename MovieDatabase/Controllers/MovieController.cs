@@ -9,17 +9,17 @@ namespace MovieDatabase.Controllers
 {
     public class MovieController : Controller
     {
-        private readonly IMovieRepository _db;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _iwebhost;
 
-        public MovieController(IMovieRepository db, IWebHostEnvironment iwebhost)
+        public MovieController(IUnitOfWork db, IWebHostEnvironment iwebhost)
         {
-            _db = db;
+            _unitOfWork = db;
             _iwebhost = iwebhost;
         }
         public IActionResult Index()
         {
-            IEnumerable<Movie> movies = _db.GetAll();
+            IEnumerable<Movie> movies = _unitOfWork.Movie.GetAll();
             return View(movies);
         }
 
@@ -48,8 +48,8 @@ namespace MovieDatabase.Controllers
 
 
                 }
-                 _db.AddAsync(movie);
-                 _db.Save();
+                _unitOfWork.Movie.AddAsync(movie);
+                _unitOfWork.Save();
                 TempData["success"] = "Movie created sucefully";
             }
             else
@@ -70,7 +70,7 @@ namespace MovieDatabase.Controllers
                 TempData["error"] = "Movie not found!";
                 return NotFound();
             }
-            var movieFromDb = _db.Find(id);
+            var movieFromDb = _unitOfWork.Movie.Find(id);
             if(movieFromDb == null)
             {
                 TempData["error"] = "Movie not found!";
@@ -83,15 +83,8 @@ namespace MovieDatabase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Movie movie, int? id)
         {
-            //if(movie.Image == null)
-            //{
-            //    var movieDb = _db.Movies.Find(id);
-            //    movie.ImgName = movieDb.ImgName;
-            //    movie.ImgPath = movieDb.ImgPath;
-            //}
-            //if (ModelState.IsValid)
-            //{
-            var obj = _db.Find(id);
+            
+            var obj = _unitOfWork.Movie.Find(id);
             if (id == null || id == 0)
             {
                 TempData["error"] = "Movie not found!";
@@ -105,9 +98,9 @@ namespace MovieDatabase.Controllers
             {
                 movie.ImgName = obj.ImgName;
                 movie.ImgPath = obj.ImgPath;
-                _db.Clear();
-                _db.Update(movie);
-                _db.Save();
+                _unitOfWork.Movie.Clear();
+                _unitOfWork.Movie.Update(movie);
+                _unitOfWork.Save();
                 TempData["success"] = "Movie updated sucefully";
             }
             else
@@ -129,9 +122,9 @@ namespace MovieDatabase.Controllers
                     movie.ImgName = movie.Image.FileName;
                     movie.ImgPath = saveImg;
                 }
-                _db.Clear();
-                _db.Update(movie);
-                _db.Save();
+                _unitOfWork.Movie.Clear();
+                _unitOfWork.Movie.Update(movie);
+                _unitOfWork.Save();
                 TempData["success"] = "Movie updated sucefully";
             }          
             return RedirectToAction("Index");
@@ -145,7 +138,7 @@ namespace MovieDatabase.Controllers
                 TempData["error"] = "Movie not found!";
                 return NotFound();
             }
-            var movieFromDb = _db.Find(id);
+            var movieFromDb = _unitOfWork.Movie.Find(id);
             if (movieFromDb == null)
             {
                 TempData["error"] = "Movie not found!";
@@ -160,15 +153,15 @@ namespace MovieDatabase.Controllers
         public IActionResult DeletePOST(int? id)
         {
 
-            var movieFromDb = _db.Find(id);
+            var movieFromDb = _unitOfWork.Movie.Find(id);
             if (movieFromDb == null)
             {
                 TempData["error"] = "Movie not found!";
                 return NotFound();
             }
 
-            _db.Remove(movieFromDb);
-            _db.Save();
+            _unitOfWork.Movie.Remove(movieFromDb);
+            _unitOfWork.Save();
             TempData["success"] = "Movie deleted sucefully";
             return RedirectToAction("Index");
         }
@@ -177,3 +170,4 @@ namespace MovieDatabase.Controllers
 
     }
 }
+ 

@@ -14,11 +14,6 @@ namespace MovieDatabase.Repository
             _db = db;
         }
 
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
-
         public void Update(Movie obj)
         {
             _db.Movies.Update(obj);
