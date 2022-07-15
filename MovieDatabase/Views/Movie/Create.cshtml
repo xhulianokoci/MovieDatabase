@@ -38,15 +38,15 @@
                 </div>
             </div>
 
-            <div class="form-group row p-2">
-                <div class="col-4 h5">
-                   <label asp-for ="Description"></label> 
+            <div class="form-group row p-3">
+                    <div class="col-4">
+                        <label asp-for="Description"></label>
+                    </div>
+                    <div class="col-8">
+                        <textarea type="text" rows="3" asp-for="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="col-8">
-                <input type="text" style="" asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-             </div>
 
            <div class="form-group row p-2">
                 <div class="col-4 h5">
@@ -60,11 +60,13 @@
 
             <div class="form-group row p-2">
                 <div class="col-4 h5">
-                   <label asp-for ="Gender"></label> 
+                   <label asp-for ="CategoryId"></label> 
                 </div>
                 <div class="col-8">
-                <input asp-for="Gender" class="form-control" />
-                <span asp-validation-for="Gender" class="text-danger"></span>
+                <select asp-for="CategoryId" asp-items="ViewBag.CategoryList" class="form-select">
+                    <option disabled selected>- Select Category -</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
              </div>
 

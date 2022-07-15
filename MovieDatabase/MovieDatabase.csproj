@@ -16,13 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\NewFolder\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="wwwroot\Images\northman_ver2.jpg">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

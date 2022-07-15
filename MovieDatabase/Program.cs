@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MovieDatabase.Data;
 using MovieDatabase.Repository;
 using MovieDatabase.Repository.IRepository;
+using Repository.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +12,6 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<RepositoryDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

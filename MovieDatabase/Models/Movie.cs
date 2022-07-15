@@ -17,12 +17,9 @@ namespace MovieDatabase.Models
         [DisplayName("Movie Production Year")]
         [Required(ErrorMessage = "Please insert movie year")]
         public int Year { get; set; }
-        [DisplayName("Movie Gender")]
-        [Required(ErrorMessage = "Please insert movie gender")]
-        public string Gender { get; set; }
         [DisplayName("Movie Rating")]
-        [Required(ErrorMessage = "Please insert movie rating")]
-        public decimal Rating { get; set; }
+        [Required(ErrorMessage ="Please inser movie rating")]
+        public decimal Rating { get; set; } 
 
         public DateTime CreatedDate { get; set; } = DateTime.Now.Date;
         public DateTime? ModifiedDate { get; set; }
@@ -35,21 +32,25 @@ namespace MovieDatabase.Models
         [Required(ErrorMessage = "Insert movie cover")]
         public IFormFile Image { get; set; }
 
+        public int? CategoryId { get; set; }
+        [ForeignKey("CategoryId")]
+        public Category Category { get; set; }
+
         public Movie()
         {
 
         }
 
-        public Movie(string title, string description, int year, string gender, decimal rating, string imgName, string imgPath)
+        public Movie(string title, string description, int year,  decimal rating, string imgName, string imgPath, int categoryId)
         {
             Title = title;
             Description = description;
             Year = year;
-            Gender = gender;
             Rating = rating;
             CreatedDate = DateTime.Now.Date;
             ImgName = imgName;
             ImgPath = imgPath;
+            CategoryId = categoryId;
 
         }
         

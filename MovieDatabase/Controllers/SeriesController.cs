@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieDatabase.Data;
 using MovieDatabase.Models;
 using MovieDatabase.Repository.IRepository;
@@ -26,6 +27,13 @@ namespace MovieDatabase.Controllers
         //Get-Create
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(
+                u => new SelectListItem
+                {
+                    Text = u.Description,
+                    Value = u.Id.ToString()
+                });
+            ViewBag.CategoryList = CategoryList;
             return View();
         }
 
@@ -34,8 +42,7 @@ namespace MovieDatabase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Series series)
         {
-            if (ModelState.IsValid)
-            {
+            
                 string imgext = Path.GetExtension(series.Image.FileName);
                 if (imgext == ".jpg" || imgext == ".png" || imgext == ".JPG" || imgext == ".PNG" || imgext == ".jpeg" || imgext == ".JPEG")
                 {
@@ -45,26 +52,25 @@ namespace MovieDatabase.Controllers
 
                     series.ImgName = series.Image.FileName;
                     series.ImgPath = saveImg;
-
-
                 }
                 _unitOfWork.Series.AddAsync(series);
                 _unitOfWork.Save();
                 TempData["success"] = "Serie created sucefully";
-            }
-            else
-            {
-                TempData["error"] = "Serie was not added to database!";
-            }
 
             return RedirectToAction("Index");
         }
 
         //Get-Create
-        
         public IActionResult Edit(int? id)
         {
-            if(id== null || id == 0)
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(
+                u => new SelectListItem
+                {
+                    Text = u.Description,
+                    Value = u.Id.ToString()
+                });
+            ViewBag.CategoryList = CategoryList;
+            if (id== null || id == 0)
             {
                 TempData["error"] = "Serie not found!";
                 return NotFound();
@@ -164,9 +170,6 @@ namespace MovieDatabase.Controllers
             TempData["success"] = "Serie deleted sucefully";
             return RedirectToAction("Index");
         }
-
-
-
     }
 }
  

@@ -8,87 +8,51 @@ using System.IO;
 
 namespace MovieDatabase.Controllers
 {
-    public class MovieController : Controller
+    public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _iwebhost;
 
-        public MovieController(IUnitOfWork db, IWebHostEnvironment iwebhost)
+        public ProductController(IUnitOfWork db, IWebHostEnvironment iwebhost)
         {
             _unitOfWork = db;
             _iwebhost = iwebhost;
         }
         public IActionResult Index()
         {
-            IEnumerable<Movie> movies = _unitOfWork.Movie.GetAll();
-            return View(movies);
+            IEnumerable<Product> products = _unitOfWork.Product.GetAll();
+            return View(products);
         }
 
-        //Get-Create
-        public IActionResult Create()
-        {
-            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(
-                u => new SelectListItem
-                {
-                    Text = u.Description,
-                    Value = u.Id.ToString()
-                });
-            ViewBag.CategoryList = CategoryList;
-            return View();
-        }
-
-        //Post-Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Movie movie)
-        {
-                string imgext = Path.GetExtension(movie.Image.FileName);
-                if (imgext == ".jpg" || imgext == ".png" || imgext == ".JPG" || imgext == ".PNG" || imgext == ".jpeg" || imgext == ".JPEG")
-                {
-                    var saveImg = Path.Combine(_iwebhost.WebRootPath, "Images", movie.Image.FileName);
-                    var stream = new FileStream(saveImg, FileMode.Create);
-                    await movie.Image.CopyToAsync(stream);
-
-                    movie.ImgName = movie.Image.FileName;
-                    movie.ImgPath = saveImg;
-                }
-
-                _unitOfWork.Movie.AddAsync(movie);
-                _unitOfWork.Save();
-                TempData["success"] = "Movie created sucefully";
-                                  
-
-            return RedirectToAction("Index");
-        }
-
-        //Get-Create
+        //GET
         
-        public IActionResult Edit(int? id)
+        public IActionResult Upsert(int? id)
         {
+            Product product = new();
+            IEnumerable<Product> ProductList = _unitOfWork.Product.GetAll();
             IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(
                 u => new SelectListItem
                 {
                     Text = u.Description,
                     Value = u.Id.ToString()
                 });
-            ViewBag.CategoryList = CategoryList;
-            if (id== null || id == 0)
+            if(id== null || id == 0)
             {
-                TempData["error"] = "Movie not found!";
-                return NotFound();
+                //create product
+                ViewBag.CategoryList = CategoryList;
+                return View(product);
             }
-            var movieFromDb = _unitOfWork.Movie.Find(id);
-            if(movieFromDb == null)
+            else
             {
-                TempData["error"] = "Movie not found!";
-                return NotFound();
+                //update product
             }
-            return View(movieFromDb);
+            
+            return View(product);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Movie movie, int? id)
+        public async Task<IActionResult> Upsert(Movie movie, int? id)
         {
             
             var obj = _unitOfWork.Movie.Find(id);
