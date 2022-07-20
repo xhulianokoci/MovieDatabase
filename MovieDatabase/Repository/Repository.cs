@@ -13,6 +13,7 @@ namespace MovieDatabase.Repository
         public Repository(RepositoryDbContext db)
         {
             _db = db;
+            _db.Products.Include(u => u.Category);
             this.dbSet = _db.Set<T>();
         }
         //Add an entity to database
@@ -21,9 +22,16 @@ namespace MovieDatabase.Repository
             dbSet.Add(entity);
         }
         //Get all records of an enitity from database
-        public IEnumerable<T> GetAll()
+        public IEnumerable<T> GetAll(string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
+            if (includeProperties != null)
+            {
+                foreach (var includeProp in includeProperties)
+                {
+                    query = query.Include(includeProperties);
+                }
+            }
             return query.ToList();
         }
         //Find object by ID
@@ -33,10 +41,17 @@ namespace MovieDatabase.Repository
             return entity;
         }
         //Get first value or default of an entity from database
-        public T GetFirstOrDefault(Expression<Func<T, bool>> filter)
+        public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
             IQueryable<T> query = dbSet;
             query = query.Where(filter);
+            if (includeProperties != null)
+            {
+                foreach (var property in includeProperties)
+                {
+                    query = query.Include(includeProperties);
+                }
+            }
             return query.FirstOrDefault();
         }
         //Remove an entity from database

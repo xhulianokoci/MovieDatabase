@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MovieDatabase.Data;
 using MovieDatabase.Models;
+using MovieDatabase.Models.ViewModels;
 using MovieDatabase.Repository.IRepository;
 using System.IO;
 
@@ -20,85 +21,63 @@ namespace MovieDatabase.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Product> products = _unitOfWork.Product.GetAll();
-            return View(products);
+            
+            return View();
         }
 
         //GET
-        
         public IActionResult Upsert(int? id)
         {
-            Product product = new();
-            IEnumerable<Product> ProductList = _unitOfWork.Product.GetAll();
-            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(
-                u => new SelectListItem
+            ProductVM productVM = new()
+            {
+                Product = new(),
+                CategoryList = _unitOfWork.Category.GetAll().Select(i => new SelectListItem
                 {
-                    Text = u.Description,
-                    Value = u.Id.ToString()
-                });
+                    Text = i.Description,
+                    Value = i.Id.ToString()
+                }),
+
+            };
             if(id== null || id == 0)
             {
                 //create product
-                ViewBag.CategoryList = CategoryList;
-                return View(product);
+                //ViewBag.CategoryList = CategoryList;
+                return View(productVM);
             }
             else
             {
                 //update product
             }
-            
-            return View(product);
+            return View(productVM);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Upsert(Movie movie, int? id)
+        public async Task<IActionResult> Upsert(ProductVM obj, IFormFile file)
         {
+            if(ModelState.IsValid)
+            {
+                string wwwRootPath = _iwebhost.WebRootPath;
+                if(file != null)
+                {
+                    string filename = Guid.NewGuid().ToString();
+                    var uploads = Path.Combine(wwwRootPath,@"Images\Products");
+                    var extension = Path.GetExtension(file.FileName);
+
+                    using (var fileStreams = new FileStream(Path.Combine(uploads, filename + extension), FileMode.Create))
+                    {
+                        file.CopyTo(fileStreams);
+                    }
+                    obj.Product.ImageUrl = @"\Images\Products\" + filename + extension;
+                }
+                _unitOfWork.Product.Add(obj.Product);
+                _unitOfWork.Save();
+                TempData["success"] = "Product added sucefully";
+                return RedirectToAction("Index");
+            }
+
+            return View(obj);
             
-            var obj = _unitOfWork.Movie.Find(id);
-            if (id == null || id == 0)
-            {
-                TempData["error"] = "Movie not found!";
-                return NotFound();
-            } else if (obj == null)
-            {
-                TempData["error"] = "Movie not found!";
-                return NotFound();
-            }
-            else if (movie.Image == null)
-            {
-                movie.ImgName = obj.ImgName;
-                movie.ImgPath = obj.ImgPath;
-                _unitOfWork.Movie.Clear();
-                _unitOfWork.Movie.Update(movie);
-                _unitOfWork.Save();
-                TempData["success"] = "Movie updated sucefully";
-            }
-            else
-            {
-                //Deletes the old image stored localy
-                if (System.IO.File.Exists(obj.ImgPath))
-                {
-                    System.IO.File.Delete(obj.ImgPath);
-                    ViewBag.deleteSuccess = "true";
-                }
-                //Generating ImagPath and ImgName for new image
-                string imgext = Path.GetExtension(movie.Image.FileName);
-                if (imgext == ".jpg" || imgext == ".png" || imgext == ".JPG" || imgext == ".PNG" || imgext == ".jpeg" || imgext == ".JPEG")
-                {
-                    var saveImg = Path.Combine(_iwebhost.WebRootPath, "Images", movie.Image.FileName);
-                    var stream = new FileStream(saveImg, FileMode.Create);
-                    await movie.Image.CopyToAsync(stream);
-                    
-                    movie.ImgName = movie.Image.FileName;
-                    movie.ImgPath = saveImg;
-                }
-                _unitOfWork.Movie.Clear();
-                _unitOfWork.Movie.Update(movie);
-                _unitOfWork.Save();
-                TempData["success"] = "Movie updated sucefully";
-            }          
-            return RedirectToAction("Index");
         }
         
         
@@ -137,7 +116,14 @@ namespace MovieDatabase.Controllers
             return RedirectToAction("Index");
         }
 
-
+        #region API CALLS
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
+            return Json(new { data = productList });
+        }
+        #endregion
 
     }
 }

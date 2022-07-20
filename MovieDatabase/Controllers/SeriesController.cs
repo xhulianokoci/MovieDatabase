@@ -126,6 +126,7 @@ namespace MovieDatabase.Controllers
 
                     series.ImgName = series.Image.FileName;
                     series.ImgPath = saveImg;
+                    series.ModifiedDate = DateTime.Now.Date;
                 }
                 _unitOfWork.Series.Clear();
                 _unitOfWork.Series.Update(series);

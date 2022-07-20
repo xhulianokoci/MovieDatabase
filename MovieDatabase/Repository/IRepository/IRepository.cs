@@ -5,9 +5,9 @@ namespace MovieDatabase.Repository.IRepository
     public interface IRepository<T> where T : class
     {
         //Get First Or Default
-        T GetFirstOrDefault(Expression<Func<T, bool>> filter);
+        T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null);
         //Get All Objects
-        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(string? includeProperties = null);
         //Add an object
         void Add(T entity);
         //Remove an object

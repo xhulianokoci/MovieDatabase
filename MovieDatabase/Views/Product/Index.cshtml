@@ -22,52 +22,30 @@
 
 <br/><br/>
 <div class="container p-3">
-@if(Model.Count() > 0)
-{
-    <table class="table table-bordered table-striped text-center" style="width: 100%">
+
+
+    <table id="myTable" class="table table-bordered table-striped text-center" style="width: 100%">
         <thead >
             <tr class="table-primary"> 
-                <th>Image Cover</th>
                 <th>Title</th>
                 <th>Description</th>
                 <th>Year</th>
-                <th>Category</th>
                 <th>Rating</th>
+                <th>Category</th>
+                <th>ListPrice</th>
                 <th>Price</th>
+                <th>Price50</th>
+                <th>Price100</th>
+                
             </tr>
         </thead>
-        <tbody>
-            @foreach(var obj in Model)
-            {
-                <tr class="table-dark">
-                    <td width="20%">
-                        <img alt="image" src="~/Images/@obj.ImageUrl" class="img-fluid "/>
-                    </td>
-                    <td width="20%" class="display-6">@obj.Title</td>
-                    <td width="30%">@obj.Description</td>
-                    <td width="10%">@obj.Year</td>
-                    <td width="10%">@obj.CategoryId</td>
-                    <td width="20%">@obj.Rating</td>
-                    <td class="text-center">
-                        <div class="w-150 btn-group" role="group">
-                            <a asp-controller="Product" asp-route-Id="@obj.Id" asp-action="Edit" asp-route-id="@obj.Id" class="btn btn-primary">
-                              <i class="bi bi-pencil-square"></i> &nbsp; Edit
-                            </a>
-                             <a asp-controller="Product" asp-route-Id="@obj.Id" asp-action="Delete" class="btn btn-danger">
-                               <i class="bi bi-trash"></i> &nbsp; Delete
-                            </a>
-                        </div>
-                    </td>
-                    
-                </tr>
-            }
-        </tbody>
+        
     </table>
-    }
-else
-    {
-        <p>No Movie products exists</p>
-    }
-    </div>
+    
+   </div>
+
+ @section Scripts{
+     <script src="~/js/product.js"></script>
+ }
 
 

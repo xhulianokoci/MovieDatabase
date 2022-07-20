@@ -128,6 +128,7 @@ namespace MovieDatabase.Controllers
                     
                     movie.ImgName = movie.Image.FileName;
                     movie.ImgPath = saveImg;
+                    movie.ModifiedDate = DateTime.Now.Date;
                 }
                 _unitOfWork.Movie.Clear();
                 _unitOfWork.Movie.Update(movie);
