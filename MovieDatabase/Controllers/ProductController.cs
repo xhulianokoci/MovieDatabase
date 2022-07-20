@@ -46,9 +46,10 @@ namespace MovieDatabase.Controllers
             }
             else
             {
-                //update product
+                productVM.Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id);
+                return View(productVM);
             }
-            return View(productVM);
+            
         }
 
         [HttpPost]
@@ -64,13 +65,30 @@ namespace MovieDatabase.Controllers
                     var uploads = Path.Combine(wwwRootPath,@"Images\Products");
                     var extension = Path.GetExtension(file.FileName);
 
+                    if(obj.Product.ImageUrl != null)
+                    {
+                        var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
                     using (var fileStreams = new FileStream(Path.Combine(uploads, filename + extension), FileMode.Create))
                     {
                         file.CopyTo(fileStreams);
                     }
                     obj.Product.ImageUrl = @"\Images\Products\" + filename + extension;
                 }
-                _unitOfWork.Product.Add(obj.Product);
+                if(obj.Product.Id == 0)
+                {
+                    _unitOfWork.Product.Add(obj.Product);
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(obj.Product);
+                }
+                
                 _unitOfWork.Save();
                 TempData["success"] = "Product added sucefully";
                 return RedirectToAction("Index");
@@ -81,40 +99,6 @@ namespace MovieDatabase.Controllers
         }
         
         
-        public IActionResult Delete(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                TempData["error"] = "Movie not found!";
-                return NotFound();
-            }
-            var movieFromDb = _unitOfWork.Movie.Find(id);
-            if (movieFromDb == null)
-            {
-                TempData["error"] = "Movie not found!";
-                return NotFound();
-            }
-            return View(movieFromDb);
-        }
-        
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeletePOST(int? id)
-        {
-
-            var movieFromDb = _unitOfWork.Movie.Find(id);
-            if (movieFromDb == null)
-            {
-                TempData["error"] = "Movie not found!";
-                return NotFound();
-            }
-
-            _unitOfWork.Movie.Remove(movieFromDb);
-            _unitOfWork.Save();
-            TempData["success"] = "Movie deleted sucefully";
-            return RedirectToAction("Index");
-        }
 
         #region API CALLS
         [HttpGet]
@@ -122,6 +106,28 @@ namespace MovieDatabase.Controllers
         {
             var productList = _unitOfWork.Product.GetAll(includeProperties: "Category");
             return Json(new { data = productList });
+        }
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+
+            var obj = _unitOfWork.Product.GetFirstOrDefault(x => x.Id == id);
+            if (obj == null)
+            {
+                return Json(new { success = false, message = "Error while deleting" });
+            }
+
+            var oldImagePath = Path.Combine(_iwebhost.WebRootPath, obj.ImageUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
+            }
+
+            _unitOfWork.Product.Remove(obj);
+            _unitOfWork.Save();
+            return Json(new { success = true, message = "Deleting successful" });
+            
         }
         #endregion
 
