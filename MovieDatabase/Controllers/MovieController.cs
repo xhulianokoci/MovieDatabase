@@ -173,9 +173,6 @@ namespace MovieDatabase.Controllers
             TempData["success"] = "Movie deleted sucefully";
             return RedirectToAction("Index");
         }
-
-
-
     }
 }
  

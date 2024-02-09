@@ -8,8 +8,8 @@ namespace MovieDatabase.Repository
         public IMovieRepository Movie {get; private set;}
         public ISeriesRepository Series {get; private set;}
         public IProductRepository Product {get; private set;}
-
         public ICategoryRepository Category {get; private set;}
+        
         private RepositoryDbContext _db;
 
         public UnitOfWork(RepositoryDbContext db)

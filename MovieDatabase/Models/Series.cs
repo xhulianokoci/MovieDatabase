@@ -40,8 +40,8 @@ namespace MovieDatabase.Models
         public Series()
         {
 
-
         }
+
         public Series(string title, string description, int year,  decimal rating, DateTime createdDate,  string? imgName, string? imgPath)
         {
             Title = title;

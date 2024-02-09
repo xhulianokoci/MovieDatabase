@@ -10,17 +10,20 @@ namespace MovieDatabase.Repository
     {
         private readonly RepositoryDbContext _db;
         internal DbSet<T> dbSet;
+
         public Repository(RepositoryDbContext db)
         {
             _db = db;
             _db.Products.Include(u => u.Category);
             this.dbSet = _db.Set<T>();
         }
+
         //Add an entity to database
         public void Add(T entity)
         {
             dbSet.Add(entity);
         }
+
         //Get all records of an enitity from database
         public IEnumerable<T> GetAll(string? includeProperties = null)
         {
@@ -34,12 +37,14 @@ namespace MovieDatabase.Repository
             }
             return query.ToList();
         }
-        //Find object by ID
+
+        //Find object by id
         public T Find(int? id)
         {
             T entity = dbSet.Find(id);
             return entity;
         }
+
         //Get first value or default of an entity from database
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter, string? includeProperties = null)
         {
@@ -54,16 +59,19 @@ namespace MovieDatabase.Repository
             }
             return query.FirstOrDefault();
         }
+
         //Remove an entity from database
         public void Remove(T entity)
         {
            dbSet.Remove(entity);
         }
+
         //Remove a range of entitnies from database
         public void RemoveRange(IEnumerable<T> entities)
         {
             dbSet.RemoveRange(entities);
         }
+
         //Add Asynchronys for an entity 
         public async void AddAsync(T entity)
         {
@@ -74,7 +82,5 @@ namespace MovieDatabase.Repository
         {
             _db.ChangeTracker.Clear();
         }
-
-
     }
 }
