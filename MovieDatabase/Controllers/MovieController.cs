@@ -42,27 +42,27 @@ namespace MovieDatabase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Movie movie)
         {
-                string imgext = Path.GetExtension(movie.Image.FileName);
-                if (imgext == ".jpg" || imgext == ".png" || imgext == ".JPG" || imgext == ".PNG" || imgext == ".jpeg" || imgext == ".JPEG")
-                {
-                    var saveImg = Path.Combine(_iwebhost.WebRootPath, "Images", movie.Image.FileName);
-                    var stream = new FileStream(saveImg, FileMode.Create);
-                    await movie.Image.CopyToAsync(stream);
+            string imgext = Path.GetExtension(movie.Image.FileName);
+            if (imgext == ".jpg" || imgext == ".png" || imgext == ".JPG" || imgext == ".PNG" || imgext == ".jpeg" || imgext == ".JPEG")
+            {
+                var saveImg = Path.Combine(_iwebhost.WebRootPath, "Images", movie.Image.FileName);
+                var stream = new FileStream(saveImg, FileMode.Create);
+                await movie.Image.CopyToAsync(stream);
 
-                    movie.ImgName = movie.Image.FileName;
-                    movie.ImgPath = saveImg;
-                }
+                movie.ImgName = movie.Image.FileName;
+                movie.ImgPath = saveImg;
+            }
 
-                _unitOfWork.Movie.AddAsync(movie);
-                _unitOfWork.Save();
-                TempData["success"] = "Movie created sucefully";
-                                  
+            _unitOfWork.Movie.AddAsync(movie);
+            _unitOfWork.Save();
+            TempData["success"] = "Movie created sucefully";
+
 
             return RedirectToAction("Index");
         }
 
         //Get-Create
-        
+
         public IActionResult Edit(int? id)
         {
             IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(
@@ -72,13 +72,13 @@ namespace MovieDatabase.Controllers
                     Value = u.Id.ToString()
                 });
             ViewBag.CategoryList = CategoryList;
-            if (id== null || id == 0)
+            if (id == null || id == 0)
             {
                 TempData["error"] = "Movie not found!";
                 return NotFound();
             }
             var movieFromDb = _unitOfWork.Movie.Find(id);
-            if(movieFromDb == null)
+            if (movieFromDb == null)
             {
                 TempData["error"] = "Movie not found!";
                 return NotFound();
@@ -90,13 +90,13 @@ namespace MovieDatabase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Movie movie, int? id)
         {
-            
             var obj = _unitOfWork.Movie.Find(id);
             if (id == null || id == 0)
             {
                 TempData["error"] = "Movie not found!";
                 return NotFound();
-            } else if (obj == null)
+            }
+            else if (obj == null)
             {
                 TempData["error"] = "Movie not found!";
                 return NotFound();
@@ -125,7 +125,7 @@ namespace MovieDatabase.Controllers
                     var saveImg = Path.Combine(_iwebhost.WebRootPath, "Images", movie.Image.FileName);
                     var stream = new FileStream(saveImg, FileMode.Create);
                     await movie.Image.CopyToAsync(stream);
-                    
+
                     movie.ImgName = movie.Image.FileName;
                     movie.ImgPath = saveImg;
                     movie.ModifiedDate = DateTime.Now.Date;
@@ -134,11 +134,11 @@ namespace MovieDatabase.Controllers
                 _unitOfWork.Movie.Update(movie);
                 _unitOfWork.Save();
                 TempData["success"] = "Movie updated sucefully";
-            }          
+            }
             return RedirectToAction("Index");
         }
-        
-        
+
+
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
@@ -154,7 +154,7 @@ namespace MovieDatabase.Controllers
             }
             return View(movieFromDb);
         }
-        
+
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -175,4 +175,3 @@ namespace MovieDatabase.Controllers
         }
     }
 }
- 

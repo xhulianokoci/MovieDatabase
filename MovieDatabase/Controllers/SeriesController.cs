@@ -5,7 +5,6 @@ using MovieDatabase.Models;
 using MovieDatabase.Repository.IRepository;
 using System.IO;
 
-
 namespace MovieDatabase.Controllers
 {
     public class SeriesController : Controller
@@ -42,20 +41,20 @@ namespace MovieDatabase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Series series)
         {
-            
-                string imgext = Path.GetExtension(series.Image.FileName);
-                if (imgext == ".jpg" || imgext == ".png" || imgext == ".JPG" || imgext == ".PNG" || imgext == ".jpeg" || imgext == ".JPEG")
-                {
-                    var saveImg = Path.Combine(_iwebhost.WebRootPath, "Images", series.Image.FileName);
-                    var stream = new FileStream(saveImg, FileMode.Create);
-                    await series.Image.CopyToAsync(stream);
 
-                    series.ImgName = series.Image.FileName;
-                    series.ImgPath = saveImg;
-                }
-                _unitOfWork.Series.AddAsync(series);
-                _unitOfWork.Save();
-                TempData["success"] = "Serie created sucefully";
+            string imgext = Path.GetExtension(series.Image.FileName);
+            if (imgext == ".jpg" || imgext == ".png" || imgext == ".JPG" || imgext == ".PNG" || imgext == ".jpeg" || imgext == ".JPEG")
+            {
+                var saveImg = Path.Combine(_iwebhost.WebRootPath, "Images", series.Image.FileName);
+                var stream = new FileStream(saveImg, FileMode.Create);
+                await series.Image.CopyToAsync(stream);
+
+                series.ImgName = series.Image.FileName;
+                series.ImgPath = saveImg;
+            }
+            _unitOfWork.Series.AddAsync(series);
+            _unitOfWork.Save();
+            TempData["success"] = "Serie created sucefully";
 
             return RedirectToAction("Index");
         }
@@ -70,13 +69,13 @@ namespace MovieDatabase.Controllers
                     Value = u.Id.ToString()
                 });
             ViewBag.CategoryList = CategoryList;
-            if (id== null || id == 0)
+            if (id == null || id == 0)
             {
                 TempData["error"] = "Serie not found!";
                 return NotFound();
             }
             var seriesFromDB = _unitOfWork.Series.Find(id);
-            if(seriesFromDB == null)
+            if (seriesFromDB == null)
             {
                 TempData["error"] = "Serie not found!";
                 return NotFound();
@@ -88,13 +87,14 @@ namespace MovieDatabase.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Series series, int? id)
         {
-            
+
             var obj = _unitOfWork.Series.Find(id);
             if (id == null || id == 0)
             {
                 TempData["error"] = "Serie not found!";
                 return NotFound();
-            } else if (obj == null)
+            }
+            else if (obj == null)
             {
                 TempData["error"] = "Serie not found!";
                 return NotFound();
@@ -132,11 +132,11 @@ namespace MovieDatabase.Controllers
                 _unitOfWork.Series.Update(series);
                 _unitOfWork.Save();
                 TempData["success"] = "Serie updated sucefully";
-            }          
+            }
             return RedirectToAction("Index");
         }
-        
-        
+
+
         public IActionResult Delete(int? id)
         {
             if (id == null || id == 0)
@@ -152,7 +152,7 @@ namespace MovieDatabase.Controllers
             }
             return View(serieFromDB);
         }
-        
+
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -173,4 +173,3 @@ namespace MovieDatabase.Controllers
         }
     }
 }
- 

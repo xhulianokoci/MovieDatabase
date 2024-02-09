@@ -21,7 +21,7 @@ namespace MovieDatabase.Controllers
         }
         public IActionResult Index()
         {
-            
+
             return View();
         }
 
@@ -38,7 +38,7 @@ namespace MovieDatabase.Controllers
                 }),
 
             };
-            if(id== null || id == 0)
+            if (id == null || id == 0)
             {
                 //create product
                 //ViewBag.CategoryList = CategoryList;
@@ -49,23 +49,23 @@ namespace MovieDatabase.Controllers
                 productVM.Product = _unitOfWork.Product.GetFirstOrDefault(u => u.Id == id);
                 return View(productVM);
             }
-            
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Upsert(ProductVM obj, IFormFile file)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 string wwwRootPath = _iwebhost.WebRootPath;
-                if(file != null)
+                if (file != null)
                 {
                     string filename = Guid.NewGuid().ToString();
-                    var uploads = Path.Combine(wwwRootPath,@"Images\Products");
+                    var uploads = Path.Combine(wwwRootPath, @"Images\Products");
                     var extension = Path.GetExtension(file.FileName);
 
-                    if(obj.Product.ImageUrl != null)
+                    if (obj.Product.ImageUrl != null)
                     {
                         var oldImagePath = Path.Combine(wwwRootPath, obj.Product.ImageUrl.TrimStart('\\'));
                         if (System.IO.File.Exists(oldImagePath))
@@ -80,7 +80,7 @@ namespace MovieDatabase.Controllers
                     }
                     obj.Product.ImageUrl = @"\Images\Products\" + filename + extension;
                 }
-                if(obj.Product.Id == 0)
+                if (obj.Product.Id == 0)
                 {
                     _unitOfWork.Product.Add(obj.Product);
                 }
@@ -88,17 +88,15 @@ namespace MovieDatabase.Controllers
                 {
                     _unitOfWork.Product.Update(obj.Product);
                 }
-                
+
                 _unitOfWork.Save();
                 TempData["success"] = "Product added sucefully";
                 return RedirectToAction("Index");
             }
 
             return View(obj);
-            
+
         }
-        
-        
 
         #region API CALLS
         [HttpGet]
@@ -127,10 +125,9 @@ namespace MovieDatabase.Controllers
             _unitOfWork.Product.Remove(obj);
             _unitOfWork.Save();
             return Json(new { success = true, message = "Deleting successful" });
-            
+
         }
         #endregion
 
     }
 }
- 
