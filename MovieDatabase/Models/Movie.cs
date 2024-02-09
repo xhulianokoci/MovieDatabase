@@ -8,25 +8,31 @@ namespace MovieDatabase.Models
     {
         [Key]
         public int Id { get; set; }
+
         [DisplayName("Movie Title")]
         [Required(ErrorMessage = "Please insert movie title")]
         public string Title { get; set; }
+
         [DisplayName("Movie Description")]
-        [Required (ErrorMessage= "Please insert movie description")]
+        [Required(ErrorMessage = "Please insert movie description")]
         public string Description { get; set; }
+
         [DisplayName("Movie Production Year")]
         [Required(ErrorMessage = "Please insert movie year")]
         public int Year { get; set; }
+
         [DisplayName("Movie Rating")]
-        [Required(ErrorMessage ="Please inser movie rating")]
-        public decimal Rating { get; set; } 
+        [Required(ErrorMessage = "Please inser movie rating")]
+        public decimal Rating { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.Now.Date;
+
         public DateTime? ModifiedDate { get; set; }
 
         public string? ImgName { get; set; }
 
         public string? ImgPath { get; set; }
+
         [NotMapped]
         [DisplayName("Movie Image Cover")]
         [Required(ErrorMessage = "Insert movie cover")]
@@ -41,7 +47,7 @@ namespace MovieDatabase.Models
 
         }
 
-        public Movie(string title, string description, int year,  decimal rating, string imgName, string imgPath, int categoryId)
+        public Movie(string title, string description, int year, decimal rating, string imgName, string imgPath, int categoryId)
         {
             Title = title;
             Description = description;
@@ -51,8 +57,6 @@ namespace MovieDatabase.Models
             ImgName = imgName;
             ImgPath = imgPath;
             CategoryId = categoryId;
-
         }
-        
     }
 }
