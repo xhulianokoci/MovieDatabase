@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MovieDatabase.Migrations
 {
-    public partial class FirstMigration : Migration
+    public partial class initalmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

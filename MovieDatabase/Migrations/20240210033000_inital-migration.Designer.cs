@@ -12,8 +12,8 @@ using MovieDatabase.Data;
 namespace MovieDatabase.Migrations
 {
     [DbContext(typeof(RepositoryDbContext))]
-    [Migration("20220715133508_FirstMigration")]
-    partial class FirstMigration
+    [Migration("20240210033000_inital-migration")]
+    partial class initalmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
