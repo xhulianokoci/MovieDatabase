@@ -1,7 +1,7 @@
 # MovieDatabase
 Movie Database Management System with ASP.NET and Blazor Pages.
 
-This project is a comprehensive Movie Database Management System developed using ASP.NET and Blazor Pages, leveraging the power of MVC Architecture. It includes robust CRUD (Create, Read, Update, Delete) operations for efficient handling of movie inventories.
+This project is a comprehensive Movie Database Management System developed using ASP.NET and Blazor Pages, leveraging the power of MVC architectural design pattern. It includes robust CRUD operations for efficient handling of movie inventories.
 
 Key Features:
 
